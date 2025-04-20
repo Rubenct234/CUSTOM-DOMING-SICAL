@@ -1,47 +1,65 @@
+import requests
+import logging
+
+# Configuración de logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+
 # Módulos simulados
 def SOURCE(module_name, system_type="operacional"):
-    print(f"[SOURCE] Módulo inicializado: {module_name} ({system_type})")
+    logging.info(f"[SOURCE] Módulo inicializado: {module_name} ({system_type})")
     return {"name": module_name, "type": system_type}
 
 def FSLS(data_sources):
-    print(f"[FSLS] Procesando fuentes: {', '.join(data_sources)}")
+    logging.info(f"[FSLS] Procesando fuentes: {', '.join(data_sources)}")
     ip = "104.16.102.112"  # Simulación de curl-ip
     comm_status = True
     return {"ip": ip, "comm": comm_status, "context": "economy"}
 
 def T(sol, tic, cost):
-    print(f"[T] Módulo T activo - SOL: {sol}, TIC: {tic}, Coste: ${cost}")
+    logging.info(f"[T] Módulo T activo - SOL: {sol}, TIC: {tic}, Coste: ${cost}")
     return {"sol": sol, "tic": tic, "cost": cost}
 
 def AGE(data, max_age=60):
-    print(f"[AGE] Control de tiempo de vida de datos: {max_age} segundos")
+    logging.info(f"[AGE] Control de tiempo de vida de datos: {max_age} segundos")
     data["TTL"] = max_age
     return data
 
 def QLS(payload):
-    print(f"[QLS] Preparando mensajes para transmisión segura...")
+    logging.info(f"[QLS] Preparando mensajes para transmisión segura...")
     return f"MISSAJES:{payload}"
 
 def TELECOM_MISSAJES_RECIVER(message, receiver_id):
-    print(f"[TELECOM] Enviando mensaje a receptor {receiver_id}...")
-    print(f"Mensaje: {message}")
+    logging.info(f"[TELECOM] Enviando mensaje a receptor {receiver_id}...")
+    logging.info(f"Mensaje: {message}")
     return True
 
 def SECURITY_TAG(protocol="JKL-ABC"):
-    print(f"[SECURITY] Aplicando protocolo de seguridad: {protocol}")
+    logging.info(f"[SECURITY] Aplicando protocolo de seguridad: {protocol}")
     return protocol
 
 def BASE_BIDIRECCIONAL(nombre_bolsa, endpoint):
-    print(f"[BASE] Estableciendo enlace bidireccional con {nombre_bolsa} en {endpoint}...")
+    logging.info(f"[BASE] Estableciendo enlace bidireccional con {nombre_bolsa} en {endpoint}...")
 
     def enviar_datos(data):
-        print(f"[BASE -> {nombre_bolsa}] Enviando datos: {data}")
-        return f"Confirmación de envío a {nombre_bolsa}"
+        try:
+            response = requests.post(endpoint, json=data)
+            response.raise_for_status()
+            logging.info(f"[BASE -> {nombre_bolsa}] Enviando datos: {data}")
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            logging.error(f"Error al enviar datos: {e}")
+            return None
 
     def recibir_datos():
-        ejemplo_dato = {"ticker": "CABK", "valor": 5.25, "hora": "12:31"}
-        print(f"[{nombre_bolsa} -> BASE] Recibiendo datos: {ejemplo_dato}")
-        return ejemplo_dato
+        try:
+            response = requests.get(endpoint)
+            response.raise_for_status()
+            ejemplo_dato = response.json()
+            logging.info(f"[{nombre_bolsa} -> BASE] Recibiendo datos: {ejemplo_dato}")
+            return ejemplo_dato
+        except requests.exceptions.RequestException as e:
+            logging.error(f"Error al recibir datos: {e}")
+            return None
 
     return {
         "enviar": enviar_datos,
@@ -49,25 +67,26 @@ def BASE_BIDIRECCIONAL(nombre_bolsa, endpoint):
     }
 
 # Flujo del sistema
-print("\n=== INICIANDO SISTEMA DE TRANSMISIÓN SEGURA ===\n")
+if __name__ == "__main__":
+    logging.info("\n=== INICIANDO SISTEMA DE TRANSMISIÓN SEGURA ===\n")
 
-source = SOURCE("QLS", system_type="terminal")
-link_source = SOURCE("EnlaceExterno", system_type="enlace")
-data = FSLS(["curl-ip", "comm", "economy"])
-session = T("SOL", "TIC", 50)
-secured_data = AGE(data)
-message = QLS(secured_data)
-transmitted = TELECOM_MISSAJES_RECIVER(message, receiver_id="RX-2048")
-security = SECURITY_TAG()
+    source = SOURCE("QLS", system_type="terminal")
+    link_source = SOURCE("EnlaceExterno", system_type="enlace")
+    data = FSLS(["curl-ip", "comm", "economy"])
+    session = T("SOL", "TIC", 50)
+    secured_data = AGE(data)
+    message = QLS(secured_data)
+    transmitted = TELECOM_MISSAJES_RECIVER(message, receiver_id="RX-2048")
+    security = SECURITY_TAG()
 
-# Enlace con bolsas de comercio en España
-bolsa_madrid = BASE_BIDIRECCIONAL("Bolsa de Madrid", "https://api.bolsamadrid.es")
-respuesta_envio = bolsa_madrid["enviar"]({"orden": "comprar", "ticker": "SAN", "cantidad": 100})
-datos_recibidos = bolsa_madrid["recibir"]()
+    # Enlace con bolsas de comercio en España
+    bolsa_madrid = BASE_BIDIRECCIONAL("Bolsa de Madrid", "https://api.bolsamadrid.es")
+    respuesta_envio = bolsa_madrid["enviar"]({"orden": "comprar", "ticker": "SAN", "cantidad": 100})
+    datos_recibidos = bolsa_madrid["recibir"]()
 
-# Presentaciones académicas y empresariales
-print("\n=== PRESENTACIONES INSTITUCIONALES ===")
-print("[UPC Terrassa] Presentación del sistema de transmisión segura aplicado a entornos educativos.")
-print("[Barcelona Business School] Propuesta de integración del sistema con plataformas bursátiles empresariales.")
+    # Presentaciones académicas y empresariales
+    logging.info("\n=== PRESENTACIONES INSTITUCIONALES ===")
+    logging.info("[UPC Terrassa] Presentación del sistema de transmisión segura aplicado a entornos educativos.")
+    logging.info("[Barcelona Business School] Propuesta de integración del sistema con plataformas bursátiles empresariales.")
 
-print("\n=== TRANSMISIÓN COMPLETA ===")
+    logging.info("\n=== TRANSMISIÓN COMPLETA ===")
