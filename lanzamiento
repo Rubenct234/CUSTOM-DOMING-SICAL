@@ -1,0 +1,22 @@
+1. Verifica los Requisitos Previos
+Asegúrate de que tu entorno cumpla con lo necesario para ejecutar el script:
+
+Python: Instala Python 3.6 o superior.
+Bibliotecas: Este script usa la biblioteca requests. Instálala si no está disponible:
+bash
+pip install requests
+2. Ejecución del Script
+Guarda el código proporcionado en un archivo llamado code.py en tu máquina local.
+Desde la terminal, dirígete a la carpeta donde se encuentra el archivo:
+bash
+cd /ruta/a/tu/proyecto
+Ejecuta el script:
+bash
+python code.py
+3. Resultados Esperados
+El script imprimirá registros detallados en la consola sobre cada paso del flujo del sistema.
+Simulará comunicación con un endpoint (https://api.bolsamadrid.es) para enviar y recibir datos relacionados con "Bolsa de Madrid".
+También mostrará mensajes relacionados con presentaciones académicas y empresariales.
+4. Consideraciones Adicionales
+Conexión a la API: Asegúrate de que el endpoint https://api.bolsamadrid.es esté disponible para pruebas. Si no es un endpoint real, puedes simularlo usando herramientas como Mock API o una biblioteca local como http.server.
+Errores de Red: Si no tienes conexión a internet o el endpoint no es válido, es posible que el script registre errores en las funciones enviar_datos y recibir_datos.
