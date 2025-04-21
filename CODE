@@ -11,7 +11,7 @@ def SOURCE(module_name, system_type="operacional"):
 
 def FSLS(data_sources):
     logging.info(f"[FSLS] Procesando fuentes: {', '.join(data_sources)}")
-    ip = "104.16.102.112"  # Simulación de curl-ip
+    ip = "2606:4700::6810:6670"  # Simulación de curl-ip
     comm_status = True
     return {"ip": ip, "comm": comm_status, "context": "economy"}
 
