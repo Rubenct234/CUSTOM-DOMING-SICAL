@@ -66,6 +66,23 @@ def BASE_BIDIRECCIONAL(nombre_bolsa, endpoint):
         "recibir": recibir_datos
     }
 
+# Nueva funcionalidad SOURCE_BASE
+def SOURCE_BASE(eco, ip, datasource, json_data):
+    logging.info(f"[SOURCE_BASE] Inicializando con ECO: {eco}, IP: {ip}, DATASOURCE: {datasource}")
+    try:
+        # Simulación de procesamiento de datos
+        processed_data = {
+            "eco": eco,
+            "ip": ip,
+            "datasource": datasource,
+            "json_data": json_data
+        }
+        logging.info(f"[SOURCE_BASE] Datos procesados: {processed_data}")
+        return processed_data
+    except Exception as e:
+        logging.error(f"Error en SOURCE_BASE: {e}")
+        return None
+
 # Flujo del sistema
 if __name__ == "__main__":
     logging.info("\n=== INICIANDO SISTEMA DE TRANSMISIÓN SEGURA ===\n")
@@ -78,6 +95,13 @@ if __name__ == "__main__":
     message = QLS(secured_data)
     transmitted = TELECOM_MISSAJES_RECIVER(message, receiver_id="RX-2048")
     security = SECURITY_TAG()
+
+    # Uso de SOURCE_BASE
+    eco = "economy"
+    ip = "192.168.1.1"
+    datasource = "FinancialAPI"
+    json_data = {"key": "value", "transaction": "completed"}
+    source_base_data = SOURCE_BASE(eco, ip, datasource, json_data)
 
     # Enlace con bolsas de comercio en España
     bolsa_madrid = BASE_BIDIRECCIONAL("Bolsa de Madrid", "https://api.finage.co.uk/agg/stock/amzn/1/day/2024-12-01/2024-12-08?apikey=API_KEYc3TXZ82E30G8E367M5KYZ32KT6EJOS1C")
