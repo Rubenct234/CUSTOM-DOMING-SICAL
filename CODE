@@ -104,7 +104,7 @@ if __name__ == "__main__":
     source_base_data = SOURCE_BASE(eco, ip, datasource, json_data)
 
     # Enlace con bolsas de comercio en España
-    bolsa_madrid = BASE_BIDIRECCIONAL("Bolsa de Madrid", "https://api.finage.co.uk/agg/stock/amzn/1/day/2024-12-01/2024-12-08?apikey=API_KEYc3TXZ82E30G8E367M5KYZ32KT6EJOS1C")
+    bolsa_madrid = BASE_BIDIRECCIONAL("Bolsa de Madrid", "https://api.finage.co.uk/agg/stock/ae/1/day/2024-12-01/2024-12-08?apikey=API_KEYc3TXZ82E30G8E367M5KYZ32KT6EJOS1C")
     respuesta_envio = bolsa_madrid["enviar"]({"orden": "comprar", "ticker": "SAN", "cantidad": 100})
     datos_recibidos = bolsa_madrid["recibir"]()
 
