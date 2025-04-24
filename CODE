@@ -1,5 +1,6 @@
 import requests
 import logging
+import json  # Importar módulo para formatear en JSON
 
 # Configuración de logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -83,6 +84,28 @@ def SOURCE_BASE(eco, ip, datasource, json_data):
         logging.error(f"Error en SOURCE_BASE: {e}")
         return None
 
+# Nuevo módulo FSLSM
+def FSLSM(operation, data_sources):
+    logging.info(f"[FSLSM] Rescatando operación: {operation}")
+    try:
+        # Simulación de procesamiento de operación y fuentes
+        result = {
+            "operation": operation,
+            "data_sources": data_sources,
+            "status": "success",
+            "details": {
+                "ip": "2606:4700::6810:6670",  # Simulación de IP
+                "context": "economy",
+                "timestamp": "2025-04-24T13:28:29Z"  # Simulación de timestamp
+            }
+        }
+        json_result = json.dumps(result, indent=4)  # Convertir a JSON con formato legible
+        logging.info(f"[FSLSM] Resultado en JSON: {json_result}")
+        return json_result
+    except Exception as e:
+        logging.error(f"Error en FSLSM: {e}")
+        return None
+
 # Flujo del sistema
 if __name__ == "__main__":
     logging.info("\n=== INICIANDO SISTEMA DE TRANSMISIÓN SEGURA ===\n")
@@ -95,6 +118,10 @@ if __name__ == "__main__":
     message = QLS(secured_data)
     transmitted = TELECOM_MISSAJES_RECIVER(message, receiver_id="RX-2048")
     security = SECURITY_TAG()
+
+    # Uso de FSLSM para rescatar operación
+    operation_result = FSLSM("retrieve_data", ["FinancialAPI", "curl-ip", "economy"])
+    logging.info(f"Operación FSLSM completada: {operation_result}")
 
     # Uso de SOURCE_BASE
     eco = "economy"
