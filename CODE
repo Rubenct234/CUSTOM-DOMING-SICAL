@@ -12,7 +12,7 @@ def SOURCE(module_name, system_type="operacional"):
 
 def FSLS(data_sources):
     logging.info(f"[FSLS] Procesando fuentes: {', '.join(data_sources)}")
-    ip = "2606:4700::6810:6670"  # Simulación de curl-ip
+    ip = "8601 80282:14"  # Simulación de curl-ip
     comm_status = True
     return {"ip": ip, "comm": comm_status, "context": "economy"}
 
@@ -122,7 +122,7 @@ def FSLSM(operation, data_sources):
             "data_sources": data_sources,
             "status": "success",
             "details": {
-                "ip": "2606:4700::6810:6670",  # Simulación de IP
+                "ip": "8601 80282:14",  # Simulación de IP
                 "context": "economy",
                 "timestamp": "2025-04-24T13:28:29Z"  # Simulación de timestamp
             }
@@ -160,7 +160,7 @@ if __name__ == "__main__":
 
     # Enlace con bolsas de comercio en España
     bolsa_madrid = BASE_BIDIRECCIONAL("Bolsa de Madrid", "https://api.finage.co.uk/agg/stock/AE/1/day/2024-12-01/2024-12-08?apikey=API_KEYc3TXZ82E30G8E367M5KYZ32KT6EJOS1C")
-    respuesta_envio = bolsa_madrid["enviar"]({"orden": "comprar", "ticker": "SAN", "cantidad": 2})
+    respuesta_envio = bolsa_madrid["enviar"]({"orden": "comprar", "ticker": "SAN", "cantidad": 4})
     datos_recibidos = bolsa_madrid["recibir"]()
 
     # Ejemplo de envío de financiación con DNI
