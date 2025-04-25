@@ -134,6 +134,45 @@ def FSLSM(operation, data_sources):
         logging.error(f"Error en FSLSM: {e}")
         return None
 
+# Nueva funcionalidad LTE_BUG_ENGINE
+def LTE_BUG_ENGINE(command, bug_details=None):
+    """
+    Módulo de ingeniería LTE para manejo de comandos relacionados con bugs.
+    
+    Args:
+        command (str): Comando a ejecutar ("detectar", "registrar", "enviar").
+        bug_details (dict, optional): Detalles del bug si aplica (e.g., descripción, severidad).
+        
+    Returns:
+        dict: Resultado de la operación.
+    """
+    logging.info(f"[LTE_BUG_ENGINE] Procesando comando: {command}")
+    try:
+        if command == "detectar":
+            # Simular detección de un bug
+            detected_bug = {"id": 1, "description": "Error en conexión LTE", "severity": "crítico"}
+            logging.info(f"[LTE_BUG_ENGINE] Bug detectado: {detected_bug}")
+            return {"status": "success", "bug": detected_bug}
+        
+        elif command == "registrar" and bug_details:
+            # Registrar el bug en un sistema interno
+            logging.info(f"[LTE_BUG_ENGINE] Registrando bug: {bug_details}")
+            return {"status": "success", "message": "Bug registrado correctamente"}
+        
+        elif command == "enviar" and bug_details:
+            # Simular envío de bug a un servidor remoto
+            logging.info(f"[LTE_BUG_ENGINE] Enviando bug al servidor: {bug_details}")
+            # Aquí podrías usar requests.post para enviar el bug
+            return {"status": "success", "message": "Bug enviado correctamente"}
+        
+        else:
+            logging.warning("[LTE_BUG_ENGINE] Comando no válido o falta de detalles del bug.")
+            return {"status": "error", "message": "Comando no válido o datos incompletos"}
+    
+    except Exception as e:
+        logging.error(f"Error en LTE_BUG_ENGINE: {e}")
+        return {"status": "error", "message": str(e)}
+
 # Flujo del sistema
 if __name__ == "__main__":
     logging.info("\n=== INICIANDO SISTEMA DE TRANSMISIÓN SEGURA ===\n")
@@ -167,14 +206,25 @@ if __name__ == "__main__":
     dni = "45858841S"
     id_financiacion = 101
     estado = "aprobado"
-    monto = 50
+    monto = 250
     endpoint = "https://clientes.pepperfinance.es/profile"
     resultado_financiacion = enviar_financiacion_con_dni(dni, id_financiacion, estado, monto, endpoint)
     logging.info(f"Resultado de la financiación: {resultado_financiacion}")
 
-    # Presentaciones académicas y empresariales
-    logging.info("\n=== PRESENTACIONES INSTITUCIONALES ===")
-    logging.info("[UPC Terrassa] Presentación del sistema de transmisión segura aplicado a entornos educativos.")
-    logging.info("[Barcelona Business School] Propuesta de integración del sistema con plataformas bursátiles empresariales.")
+    # Uso del módulo LTE_BUG_ENGINE
+    logging.info("\n=== INICIANDO PROCESO LTE BUG ENGINE ===")
+    
+    # Detectar un bug
+    resultado_detectar = LTE_BUG_ENGINE("detectar")
+    logging.info(f"Resultado de detección: {resultado_detectar}")
+
+    # Registrar un bug
+    bug_info = {"id": 2, "description": "Fallo en el módulo FSLSM", "severity": "medio"}
+    resultado_registrar = LTE_BUG_ENGINE("registrar", bug_details=bug_info)
+    logging.info(f"Resultado de registro: {resultado_registrar}")
+
+    # Enviar un bug detectado
+    resultado_enviar = LTE_BUG_ENGINE("enviar", bug_details=bug_info)
+    logging.info(f"Resultado del envío: {resultado_enviar}")
 
     logging.info("\n=== TRANSMISIÓN COMPLETA ===")
