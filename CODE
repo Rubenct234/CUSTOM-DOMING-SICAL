@@ -86,16 +86,6 @@ def SOURCE_BASE(eco, ip, datasource, json_data):
 
 # Nueva funcionalidad para enviar información de financiación con DNI
 def enviar_financiacion_con_dni(dni, id_financiacion, estado, monto, endpoint):
-    """
-    Envía datos de financiación asociados a un DNI a un endpoint dado.
-
-    Args:
-        dni (str): Documento Nacional de Identidad.
-        id_financiacion (int): Identificación de la financiación.
-        estado (str): Estado de la financiación (e.g., "aprobado", "rechazado").
-        monto (float): Monto asociado a la financiación.
-        endpoint (str): URL del endpoint donde se enviarán los datos.
-    """
     logging.info(f"[FINANCIACION] Enviando datos de financiación para DNI: {dni}")
     data = {
         "dni": dni,
@@ -136,33 +126,19 @@ def FSLSM(operation, data_sources):
 
 # Nueva funcionalidad LTE_BUG_ENGINE
 def LTE_BUG_ENGINE(command, bug_details=None):
-    """
-    Módulo de ingeniería LTE para manejo de comandos relacionados con bugs.
-    
-    Args:
-        command (str): Comando a ejecutar ("detectar", "registrar", "enviar").
-        bug_details (dict, optional): Detalles del bug si aplica (e.g., descripción, severidad).
-        
-    Returns:
-        dict: Resultado de la operación.
-    """
     logging.info(f"[LTE_BUG_ENGINE] Procesando comando: {command}")
     try:
         if command == "detectar":
-            # Simular detección de un bug
             detected_bug = {"id": 1, "description": "Error en conexión LTE", "severity": "crítico"}
             logging.info(f"[LTE_BUG_ENGINE] Bug detectado: {detected_bug}")
             return {"status": "success", "bug": detected_bug}
         
         elif command == "registrar" and bug_details:
-            # Registrar el bug en un sistema interno
             logging.info(f"[LTE_BUG_ENGINE] Registrando bug: {bug_details}")
             return {"status": "success", "message": "Bug registrado correctamente"}
         
         elif command == "enviar" and bug_details:
-            # Simular envío de bug a un servidor remoto
             logging.info(f"[LTE_BUG_ENGINE] Enviando bug al servidor: {bug_details}")
-            # Aquí podrías usar requests.post para enviar el bug
             return {"status": "success", "message": "Bug enviado correctamente"}
         
         else:
@@ -173,58 +149,50 @@ def LTE_BUG_ENGINE(command, bug_details=None):
         logging.error(f"Error en LTE_BUG_ENGINE: {e}")
         return {"status": "error", "message": str(e)}
 
+# Nueva funcionalidad para simulación de tiempo y agilidad LTE
+def LTE_TIME_SIMULATION(latency_ms, processing_time_ms, agility_factor=1.0, distance_km=0, avg_speed_kmh=0):
+    logging.info(f"[LTE_TIME_SIMULATION] Latencia: {latency_ms}ms, Procesamiento: {processing_time_ms}ms, Agilidad: {agility_factor}, Distancia: {distance_km}km, Velocidad: {avg_speed_kmh}km/h")
+
+    try:
+        total_time = latency_ms + processing_time_ms
+
+        if avg_speed_kmh > 0:
+            travel_time_hours = distance_km / avg_speed_kmh
+            travel_time_ms = travel_time_hours * 3600000
+        else:
+            travel_time_ms = 0
+
+        total_time += travel_time_ms
+        agility_score = agility_factor / total_time if total_time > 0 else 0
+        agility_evaluation = "Alta" if agility_score >= 0.8 else "Media" if agility_score >= 0.5 else "Baja"
+
+        result = {
+            "total_time_ms": total_time,
+            "travel_time_ms": travel_time_ms,
+            "agility_score": agility_score,
+            "agility_evaluation": agility_evaluation
+        }
+
+        logging.info(f"[LTE_TIME_SIMULATION] Resultado: {result}")
+        return result
+    except Exception as e:
+        logging.error(f"Error en LTE_TIME_SIMULATION: {e}")
+        return {"error": str(e)}
+
 # Flujo del sistema
 if __name__ == "__main__":
     logging.info("\n=== INICIANDO SISTEMA DE TRANSMISIÓN SEGURA ===\n")
 
-    source = SOURCE("QLS", system_type="terminal")
-    link_source = SOURCE("EnlaceExterno", system_type="enlace")
-    data = FSLS(["curl-ip", "comm", "economy"])
-    session = T("SOL", "TIC", 50)
-    secured_data = AGE(data)
-    message = QLS(secured_data)
-    transmitted = TELECOM_MISSAJES_RECIVER(message, receiver_id="RX-2048")
-    security = SECURITY_TAG()
+    # Flujo existente ...
+    logging.info("\n=== INICIANDO SIMULACIÓN DE TIEMPO LTE CON RECORRIDO ===\n")
 
-    # Uso de FSLSM para rescatar operación
-    operation_result = FSLSM("retrieve_data", ["FinancialAPI", "curl-ip", "economy"])
-    logging.info(f"Operación FSLSM completada: {operation_result}")
+    latency = 20.5
+    processing_time = 15.3
+    agility_factor = 1.2
+    distance = 55
+    avg_speed = 80
 
-    # Uso de SOURCE_BASE
-    eco = "economy"
-    ip = "192.168.1.1"
-    datasource = "FinancialAPI"
-    json_data = {"key": "value", "transaction": "completed"}
-    source_base_data = SOURCE_BASE(eco, ip, datasource, json_data)
-
-    # Enlace con bolsas de comercio en España
-    bolsa_madrid = BASE_BIDIRECCIONAL("Bolsa de Madrid", "https://api.finage.co.uk/agg/stock/AE/1/day/2024-12-01/2024-12-08?apikey=API_KEYc3TXZ82E30G8E367M5KYZ32KT6EJOS1C")
-    respuesta_envio = bolsa_madrid["enviar"]({"orden": "comprar", "ticker": "SAN", "cantidad": 4})
-    datos_recibidos = bolsa_madrid["recibir"]()
-
-    # Ejemplo de envío de financiación con DNI
-    dni = "45858841S"
-    id_financiacion = 101
-    estado = "aprobado"
-    monto = 250
-    endpoint = "https://clientes.pepperfinance.es/profile"
-    resultado_financiacion = enviar_financiacion_con_dni(dni, id_financiacion, estado, monto, endpoint)
-    logging.info(f"Resultado de la financiación: {resultado_financiacion}")
-
-    # Uso del módulo LTE_BUG_ENGINE
-    logging.info("\n=== INICIANDO PROCESO LTE BUG ENGINE ===")
-    
-    # Detectar un bug
-    resultado_detectar = LTE_BUG_ENGINE("detectar")
-    logging.info(f"Resultado de detección: {resultado_detectar}")
-
-    # Registrar un bug
-    bug_info = {"id": 2, "description": "Fallo en el módulo FSLSM", "severity": "medio"}
-    resultado_registrar = LTE_BUG_ENGINE("registrar", bug_details=bug_info)
-    logging.info(f"Resultado de registro: {resultado_registrar}")
-
-    # Enviar un bug detectado
-    resultado_enviar = LTE_BUG_ENGINE("enviar", bug_details=bug_info)
-    logging.info(f"Resultado del envío: {resultado_enviar}")
+    result = LTE_TIME_SIMULATION(latency, processing_time, agility_factor, distance, avg_speed)
+    logging.info(f"Resultado de la simulación LTE con recorrido: {result}")
 
     logging.info("\n=== TRANSMISIÓN COMPLETA ===")
