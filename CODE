@@ -130,21 +130,38 @@ def LTE_BUG_ENGINE(command, bug_details=None):
     try:
         if command == "detectar":
             detected_bug = {"id": 1, "description": "Error en conexión LTE", "severity": "crítico"}
+            
+            # Asociar datos del vehículo #3131 al bug detectado
+            detected_bug["vehicle"] = {
+                "vehicle_id": 3131,
+                "name": "Carrera Rápida",
+                "type": "Carrera",
+                "manufacturer": "Velocidad Motors",
+                "year": 2025,
+                "specifications": {
+                    "engine": "v6 Turbo",
+                    "horsepower": 750,
+                    "weight": "1200 kg",
+                    "top_speed": "165 km/h",
+                    "transmission": "Automática de 6 velocidades"
+                }
+            }
+            
             logging.info(f"[LTE_BUG_ENGINE] Bug detectado: {detected_bug}")
             return {"status": "success", "bug": detected_bug}
-        
+
         elif command == "registrar" and bug_details:
             logging.info(f"[LTE_BUG_ENGINE] Registrando bug: {bug_details}")
             return {"status": "success", "message": "Bug registrado correctamente"}
-        
+
         elif command == "enviar" and bug_details:
             logging.info(f"[LTE_BUG_ENGINE] Enviando bug al servidor: {bug_details}")
             return {"status": "success", "message": "Bug enviado correctamente"}
-        
+
         else:
             logging.warning("[LTE_BUG_ENGINE] Comando no válido o falta de detalles del bug.")
             return {"status": "error", "message": "Comando no válido o datos incompletos"}
-    
+
     except Exception as e:
         logging.error(f"Error en LTE_BUG_ENGINE: {e}")
         return {"status": "error", "message": str(e)}
