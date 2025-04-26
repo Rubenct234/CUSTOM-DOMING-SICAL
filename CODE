@@ -1,6 +1,7 @@
 import requests
 import logging
 import json  # Importar módulo para formatear en JSON
+import datetime  # Para manejar fechas y horas
 
 # Configuración de logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
@@ -84,23 +85,6 @@ def SOURCE_BASE(eco, ip, datasource, json_data):
         logging.error(f"Error en SOURCE_BASE: {e}")
         return None
 
-# Nueva funcionalidad para enviar información de financiación con DNI
-def enviar_financiacion_con_dni(dni, id_financiacion, estado, monto, endpoint):
-    logging.info(f"[FINANCIACION] Enviando datos de financiación para DNI: {dni}")
-    data = {
-        "dni": dni,
-        "idFinanciacion": id_financiacion,
-        "estado": estado,
-        "monto": monto
-    }
-    try:
-        response = requests.post(endpoint, json=data)
-        response.raise_for_status()
-        logging.info(f"[FINANCIACION] Respuesta del servidor: {response.json()}")
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Error al enviar datos de financiación: {e}")
-        return None
 
 # Nuevo módulo FSLSM
 def FSLSM(operation, data_sources):
@@ -124,49 +108,7 @@ def FSLSM(operation, data_sources):
         logging.error(f"Error en FSLSM: {e}")
         return None
 
-# Nueva funcionalidad LTE_BUG_ENGINE
-def LTE_BUG_ENGINE(command, bug_details=None):
-    logging.info(f"[LTE_BUG_ENGINE] Procesando comando: {command}")
-    try:
-        if command == "detectar":
-            detected_bug = {"id": 1, "description": "Error en conexión LTE", "severity": "crítico"}
-            
-            # Asociar datos del vehículo #3131 al bug detectado
-            detected_bug["vehicle"] = {
-                "vehicle_id": 3131,
-                "name": "Carrera Rápida",
-                "type": "Carrera",
-                "manufacturer": "Velocidad Motors",
-                "year": 2025,
-                "specifications": {
-                    "engine": "v6 Turbo",
-                    "horsepower": 750,
-                    "weight": "1200 kg",
-                    "top_speed": "165 km/h",
-                    "transmission": "Automática de 6 velocidades"
-                }
-            }
-            
-            logging.info(f"[LTE_BUG_ENGINE] Bug detectado: {detected_bug}")
-            return {"status": "success", "bug": detected_bug}
-
-        elif command == "registrar" and bug_details:
-            logging.info(f"[LTE_BUG_ENGINE] Registrando bug: {bug_details}")
-            return {"status": "success", "message": "Bug registrado correctamente"}
-
-        elif command == "enviar" and bug_details:
-            logging.info(f"[LTE_BUG_ENGINE] Enviando bug al servidor: {bug_details}")
-            return {"status": "success", "message": "Bug enviado correctamente"}
-
-        else:
-            logging.warning("[LTE_BUG_ENGINE] Comando no válido o falta de detalles del bug.")
-            return {"status": "error", "message": "Comando no válido o datos incompletos"}
-
-    except Exception as e:
-        logging.error(f"Error en LTE_BUG_ENGINE: {e}")
-        return {"status": "error", "message": str(e)}
-
-# Nueva funcionalidad para simulación de tiempo y agilidad LTE
+# Nueva funcionalidad para simulación de tiempo LTE
 def LTE_TIME_SIMULATION(latency_ms, processing_time_ms, agility_factor=1.0, distance_km=0, avg_speed_kmh=0):
     logging.info(f"[LTE_TIME_SIMULATION] Latencia: {latency_ms}ms, Procesamiento: {processing_time_ms}ms, Agilidad: {agility_factor}, Distancia: {distance_km}km, Velocidad: {avg_speed_kmh}km/h")
 
@@ -196,20 +138,32 @@ def LTE_TIME_SIMULATION(latency_ms, processing_time_ms, agility_factor=1.0, dist
         logging.error(f"Error en LTE_TIME_SIMULATION: {e}")
         return {"error": str(e)}
 
+# Nueva funcionalidad TELEMETRIA
+def TELEMETRIA(data_type, value, timestamp=None):
+    """
+    Función para registrar datos de telemetría.
+    """
+    if not timestamp:
+        timestamp = datetime.datetime.now().isoformat()
+    logging.info(f"[TELEMETRIA] Tipo: {data_type}, Valor: {value}, Timestamp: {timestamp}")
+    return {"data_type": data_type, "value": value, "timestamp": timestamp}
+
 # Flujo del sistema
 if __name__ == "__main__":
     logging.info("\n=== INICIANDO SISTEMA DE TRANSMISIÓN SEGURA ===\n")
 
     # Flujo existente ...
-    logging.info("\n=== INICIANDO SIMULACIÓN DE TIEMPO LTE CON RECORRIDO ===\n")
-
-    latency = 20.5
+    latency = 21.5
     processing_time = 15.3
-    agility_factor = 1.2
-    distance = 55
+    agility_factor = 2.5
+    distance = 24.09
     avg_speed = 80
 
     result = LTE_TIME_SIMULATION(latency, processing_time, agility_factor, distance, avg_speed)
     logging.info(f"Resultado de la simulación LTE con recorrido: {result}")
+
+    logging.info("\n=== REGISTRANDO TELEMETRÍA ===\n")
+    telemetry_result = TELEMETRIA("temperatura", 25.6, "2025-04-26T12:00:00Z")
+    logging.info(f"Resultado telemetría: {telemetry_result}")
 
     logging.info("\n=== TRANSMISIÓN COMPLETA ===")
